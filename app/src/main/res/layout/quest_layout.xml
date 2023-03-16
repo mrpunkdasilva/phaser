@@ -1,0 +1,29 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <CheckBox
+            android:id="@+id/questsCheckBox"
+            android:layout_width="355dp"
+            android:layout_height="wrap_content"
+            android:buttonTint="@android:color/holo_green_dark"
+            android:padding="8dp"
+            tools:text="Exemplo de Quest" />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

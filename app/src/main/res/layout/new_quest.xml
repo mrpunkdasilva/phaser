@@ -1,0 +1,31 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/newQuestText"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:background="@null"
+        android:hint="Nova Quest"
+        android:padding="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <Button
+        android:id="@+id/btnNewQuest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newQuestText"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="5dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/black"
+        android:text="@string/str.btn_new_quest"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/holo_green_dark" />
+
+
+</RelativeLayout>
