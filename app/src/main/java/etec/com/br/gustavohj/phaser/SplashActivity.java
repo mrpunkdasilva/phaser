@@ -17,7 +17,7 @@ public class SplashActivity extends AppCompatActivity {
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
 
         /*
-        * Manipulador para criar um delay denro da Acrivity
+        * Manipulador para criar um delay dentro da Activity
         * - O Handler é Instanciado e usa-se o método postDelayed que deve ser passado o Runnable
         * - e dentro dele deve ser pasado uma function que vai conter o que será executado depois do dealy
         * - e o segundo argumento é o delay em millisegundos

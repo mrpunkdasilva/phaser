@@ -2,4 +2,6 @@
     <string name="app_name">Phaser</string>
     <string name="str.txt_title_actvt_main">Quests</string>
     <string name="str.btn_new_quest">Salvar</string>
+    <string name="new_task">Nova Quest</string>
+    <string name="save">Salvar Quest</string>
 </resources>
