@@ -12,43 +12,52 @@ import java.util.List;
 import etec.com.br.gustavohj.phaser.Adapter.ToDoAdapter;
 import etec.com.br.gustavohj.phaser.Model.ToDoModel;
 
+/**
+ * The MainActivity class represents the main activity of the application.
+ * It manages the display of tasks using a RecyclerView and a ToDoAdapter.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView tasksRecyclerView;
-    private ToDoAdapter tasksAdapter;
+    private RecyclerView tasksRecyclerView; // The RecyclerView that displays the tasks
+    private ToDoAdapter tasksAdapter; // The adapter that manages the task list
 
-    private List<ToDoModel> taskList;
+    private List<ToDoModel> taskList; // The list of tasks
 
+    /**
+     * Called when the activity is created.
+     * Initializes the task list, RecyclerView, and ToDoAdapter.
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        taskList = new ArrayList<>();
+        taskList = new ArrayList<>(); // Initialize the task list
 
-        tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
-        // -> com isso faz com que set quem controla o layout em questão, ou seja, o `questsRecyclerView`
-        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tasksRecyclerView = findViewById(R.id.tasksRecyclerView); // Find the RecyclerView
+        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set the layout manager
 
-        // criando adapter das tasks
+        // Create the adapter and set it to the RecyclerView
         tasksAdapter = new ToDoAdapter(this);
         tasksRecyclerView.setAdapter(tasksAdapter);
 
-        // criando a task
+        // Create a sample task and add it to the task list
         ToDoModel task = new ToDoModel();
         task.setQuest("Teste de task");
         task.setStatus(0);
         task.setId(1);
 
-        // adicionando tasks a lista de tasks
+        // Add multiple tasks to the task list
         taskList.add(task);
         taskList.add(task);
         taskList.add(task);
         taskList.add(task);
         taskList.add(task);
 
-        // setando a lista de tarefas no ToDoAdapter
+        // Set the task list in the ToDoAdapter
         tasksAdapter.setTasks(taskList);
     }
 }

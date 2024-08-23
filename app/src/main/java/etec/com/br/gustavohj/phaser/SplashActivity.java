@@ -6,8 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+/**
+ * The SplashActivity class represents the splash screen activity of the application.
+ * It displays a splash screen and then transitions to the MainActivity after a brief delay.
+ */
 public class SplashActivity extends AppCompatActivity {
 
+    /**
+     * Called when the activity is created.
+     * Initializes the splash screen and starts the MainActivity after a 1-second delay.
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,12 +26,12 @@ public class SplashActivity extends AppCompatActivity {
 
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
 
-        /*
-        * Manipulador para criar um delay dentro da Activity
-        * - O Handler é Instanciado e usa-se o método postDelayed que deve ser passado o Runnable
-        * - e dentro dele deve ser pasado uma function que vai conter o que será executado depois do dealy
-        * - e o segundo argumento é o delay em millisegundos
-        * */
+        /**
+         * Creates a delay using a Handler.
+         * The Handler is instantiated and the postDelayed method is used, which takes a Runnable
+         * and the delay in milliseconds.
+         * The Runnable contains the code to be executed after the delay.
+         */
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
