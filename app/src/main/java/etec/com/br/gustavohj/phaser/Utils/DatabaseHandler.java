@@ -38,7 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      *
      * @param context the context of the application
      */
-    private DatabaseHandler(Context context) {
+    public DatabaseHandler(Context context) {
         super(context, NAME, null, VERSION);
     }
 
