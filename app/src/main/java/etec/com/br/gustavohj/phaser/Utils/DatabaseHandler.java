@@ -46,11 +46,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Called when the database is created for the first time.
      * Executes the CREATE_TODO_TABLE query to create the to-do table.
      *
-     * @param sqLiteDatabase the SQLiteDatabase instance
+     * @param db the SQLiteDatabase instance
      */
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        // Execute the CREATE_TODO_TABLE query to create the to-do table
+    public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TODO_TABLE);
     }
 
@@ -58,12 +57,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Called when the database needs to be upgraded.
      * Deletes the old to-do table and creates a new one using the onCreate method.
      *
-     * @param sqLiteDatabase the SQLiteDatabase instance
+     * @param db the SQLiteDatabase instance
      * @param oldVersion     the old version of the database
      * @param newVersion     the new version of the database
      */
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Delete the old to-do table
         db.execSQL(DROP_TODO_TABLE);
 
@@ -75,7 +74,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Opens the database for writing operations.
      */
     public void openDatabase() {
-        // Get the writable database instance
         db = this.getWritableDatabase();
     }
 
@@ -87,7 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void insertTask(ToDoModel task) {
         // Create a ContentValues object to hold the task data
         ContentValues cv = new ContentValues();
-        cv.put(TASK, task.getQuest());
+        cv.put(TASK, task.getTask());
         cv.put(STATUS, 0);
 
         // Insert the task data into the to-do table
@@ -100,33 +98,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @return a list of all the tasks
      */
     @SuppressLint("Range")
-    public List<ToDoModel> getAllTask() {
-        List<ToDoModel> toDoList = new ArrayList<>();
-        Cursor cursor = null;
+    public List<ToDoModel> getAllTasks() {
+        List<ToDoModel> taskList = new ArrayList<>();
+        Cursor cur = null;
 
         db.beginTransaction();
-        try {
-            // Create a cursor to retrieve the data from the to-do table
-            cursor = db.query(TODO_TABLE, null, null, null, null, null, null, null);
-
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    do {
-                        // Create a new to-do task and add it to the list
+        try{
+            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null);
+            if(cur != null){
+                if(cur.moveToFirst()){
+                    do{
                         ToDoModel task = new ToDoModel();
-                        task.setId(cursor.getInt(cursor.getColumnIndex(ID)));
-                        task.setQuest(cursor.getString(cursor.getColumnIndex(TASK)));
-                        task.setStatus(cursor.getInt(cursor.getColumnIndex(STATUS)));
-                        toDoList.add(task);
-                    } while (cursor.moveToNext());
+                        task.setId(cur.getInt(cur.getColumnIndex(ID)));
+                        task.setTask(cur.getString(cur.getColumnIndex(TASK)));
+                        task.setStatus(cur.getInt(cur.getColumnIndex(STATUS)));
+                        taskList.add(task);
+                    }
+                    while(cur.moveToNext());
                 }
             }
-        } finally {
-            db.endTransaction();
-            cursor.close();
         }
-
-        return toDoList;
+        finally {
+            db.endTransaction();
+            assert cur != null;
+            cur.close();
+        }
+        return taskList;
     }
 
     /**

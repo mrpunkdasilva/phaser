@@ -13,110 +13,146 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.Objects;
+
 import etec.com.br.gustavohj.phaser.Model.ToDoModel;
 import etec.com.br.gustavohj.phaser.Utils.DatabaseHandler;
 
+/**
+ * The AddNewTask class represents a bottom sheet dialog fragment for adding or editing a to-do item.
+ * It provides the UI and logic for creating and updating to-do items.
+ */
 public class AddNewTask extends BottomSheetDialogFragment {
-    public static final String TAG = "actionBottomDialog";
 
+    public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private Button newTaskSaveButton;
+
     private DatabaseHandler db;
 
-    public static AddNewTask newInstance() {
+    /**
+     * Creates a new instance of the AddNewTask fragment.
+     *
+     * @return a new instance of the AddNewTask fragment
+     */
+    public static AddNewTask newInstance(){
         return new AddNewTask();
     }
 
+    /**
+     * Called when the fragment is created.
+     * Sets the style of the dialog.
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // criar e setar os estilos do Dialog
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
 
+    /**
+     * Creates the view for the dialog.
+     *
+     * @param inflater the LayoutInflater to inflate the view
+     * @param container the parent ViewGroup
+     * @param savedInstanceState the saved instance state
+     * @return the created view
+     */
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // colocar o Dialog na view já criada
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_quest, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         return view;
     }
 
+    /**
+     * Called when the view is created.
+     * Initializes the UI components and sets up the logic for adding or editing a to-do item.
+     *
+     * @param view the view created
+     * @param savedInstanceState the saved instance state
+     */
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // criar os objetos
-        newTaskText = getView().findViewById(R.id.newTaskText);
+        newTaskText = Objects.requireNonNull(getView()).findViewById(R.id.newTaskText);
         newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
 
-        // criar instancia do banco e iniciar
-        db = new DatabaseHandler(getActivity());
-        db.openDatabase();
+        boolean isUpdate = false;
 
-        boolean isUpdated = false;
         final Bundle bundle = getArguments();
-
-        if (bundle != null) {
-            isUpdated = true;
+        if(bundle != null){
+            isUpdate = true;
             String task = bundle.getString("task");
             newTaskText.setText(task);
-
-            if (!task.isEmpty()) {
-                newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+            assert task != null;
+            if(task.length()>0) {
+                newTaskSaveButton.setTextColor(
+                        ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark)
+                );
             }
         }
 
+        db = new DatabaseHandler(getActivity());
+        db.openDatabase();
+
         newTaskText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
-                if (s.toString().isEmpty()) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().equals("") || s.toString().isEmpty() || s.toString().equals(" ")){
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
-                } else {
+                }
+                else{
                     newTaskSaveButton.setEnabled(true);
-                    newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+                    newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable s) {
             }
         });
 
-        // fazer uma copida do isUpdated
-        boolean finalIsUpdated = isUpdated;
-        newTaskSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String text = newTaskText.getText().toString();
-                if (finalIsUpdated) { // atualizar
-                    db.updateTask(bundle.getInt("id"), text);
-                } else { // criar
-                    ToDoModel task = new ToDoModel();
-                    task.setQuest(text);
-                    task.setStatus(0);
-                }
+        final boolean finalIsUpdate = isUpdate;
+        newTaskSaveButton.setOnClickListener(v -> {
+            String text = newTaskText.getText().toString();
+            if(finalIsUpdate){
+                db.updateTask(bundle.getInt("id"), text);
             }
+            else {
+                ToDoModel task = new ToDoModel();
+                task.setTask(text);
+                task.setStatus(0);
+                db.insertTask(task);
+            }
+            dismiss();
         });
-
-        // faz o reload automaticamente, sem que o usuario tenha que fazer
-        dismiss();
     }
 
+    /**
+     * Called when the dialog is dismissed.
+     * Notifies the parent activity of the dialog close event.
+     *
+     * @param dialog the dialog that was dismissed
+     */
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog){
         Activity activity = getActivity();
-        if (activity instanceof DialogCloseListener) {
+        if(activity instanceof DialogCloseListener) {
             ((DialogCloseListener)activity).handleDialogClose(dialog);
         }
     }

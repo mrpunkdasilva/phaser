@@ -2,12 +2,12 @@ package etec.com.br.gustavohj.phaser.Model;
 
 /**
  * The ToDoModel class represents a to-do item.
- * It contains the id, status, and quest of the to-do item.
+ * It contains the id, status, and task of the to-do item.
  */
 public class ToDoModel {
     private int id; // The unique identifier of the to-do item
     private int status; // The status of the to-do item (0 for incomplete, 1 for complete)
-    private String quest; // The description of the to-do item
+    private String task; // The description of the to-do item
 
     /**
      * Returns the ID of the to-do item.
@@ -50,16 +50,16 @@ public class ToDoModel {
      *
      * @return the description of the to-do item
      */
-    public String getQuest() {
-        return quest;
+    public String getTask() {
+        return task;
     }
 
     /**
      * Sets the description of the to-do item.
      *
-     * @param quest the description of the to-do item
+     * @param task the description of the to-do item
      */
-    public void setQuest(String quest) {
-        this.quest = quest;
+    public void setTask(String task) {
+        this.task = task;
     }
 }

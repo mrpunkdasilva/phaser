@@ -1,13 +1,14 @@
 package etec.com.br.gustavohj.phaser.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
      * @param viewType the view type
      * @return the created ViewHolder instance
      */
+    @NonNull
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.quest_layout, parent, false);
@@ -62,7 +64,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         db.openDatabase();
 
         ToDoModel item = todoList.get(position);
-        holder.task.setText(item.getQuest());
+        holder.task.setText(item.getTask());
         holder.task.setChecked(toBoolean(item.getStatus()));
         holder.task.setOnCheckedChangeListener((compoundButton, b) -> {
             if (compoundButton.isChecked()) {
@@ -97,6 +99,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
      *
      * @param todoList the list of to-do items
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setTasks(List<ToDoModel> todoList) {
         this.todoList = todoList;
         notifyDataSetChanged();
@@ -114,7 +117,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         // Create a new bundle to pass the item data to the AddNewTask fragment
         Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
-        bundle.putString("task", item.getQuest());
+        bundle.putString("task", item.getTask());
 
         // Create a new AddNewTask fragment and set the arguments
         AddNewTask fragment = new AddNewTask();

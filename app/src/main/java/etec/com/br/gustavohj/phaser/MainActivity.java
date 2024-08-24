@@ -8,13 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import etec.com.br.gustavohj.phaser.Adapter.ToDoAdapter;
 import etec.com.br.gustavohj.phaser.Model.ToDoModel;
@@ -26,16 +25,17 @@ import etec.com.br.gustavohj.phaser.Utils.DatabaseHandler;
  */
 public class MainActivity extends AppCompatActivity implements DialogCloseListener {
 
-    private RecyclerView tasksRecyclerView; // The RecyclerView that displays the tasks
-    private ToDoAdapter tasksAdapter; // The adapter that manages the task list
+    private DatabaseHandler db;
+
+    private RecyclerView tasksRecyclerView;
+    private ToDoAdapter tasksAdapter;
     private FloatingActionButton fab;
 
-    private DatabaseHandler db;
-    private List<ToDoModel> taskList; // The list of tasks
+    private List<ToDoModel> taskList;
 
     /**
      * Called when the activity is created.
-     * Initializes the task list, RecyclerView, and ToDoAdapter.
+     * Initializes the UI components and sets up the task management logic.
      *
      * @param savedInstanceState the saved instance state
      */
@@ -43,52 +43,27 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         db = new DatabaseHandler(this);
         db.openDatabase();
 
-        taskList = new ArrayList<>(); // Initialize the task list
-        tasksRecyclerView = findViewById(R.id.tasksRecyclerView); // Find the RecyclerView
-        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set the layout manager
-
-        // Create the adapter and set it to the RecyclerView
-        tasksAdapter = new ToDoAdapter(db, this);
+        tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
+        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tasksAdapter = new ToDoAdapter(db, MainActivity.this);
         tasksRecyclerView.setAdapter(tasksAdapter);
-
-        // Create a sample task and add it to the task list
-        ToDoModel task = new ToDoModel();
-        task.setQuest("Teste de task");
-        task.setStatus(0);
-        task.setId(1);
-
-        // Add multiple tasks to the task list
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
-
-        // Set the task list in the ToDoAdapter
-        tasksAdapter.setTasks(taskList);
-
-        fab = findViewById(R.id.fab);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
-        // Preencher as tasks no layout
-        taskList = db.getAllTask();
+        fab = findViewById(R.id.fab);
+
+        taskList = db.getAllTasks();
         Collections.reverse(taskList);
+
         tasksAdapter.setTasks(taskList);
 
-        // adicionar ouvinte de clique ao botão flutuante
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
-            }
-        });
+        fab.setOnClickListener(v -> AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG));
     }
 
     /**
@@ -100,8 +75,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        taskList = db.getAllTask();
-
+        taskList = db.getAllTasks();
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
