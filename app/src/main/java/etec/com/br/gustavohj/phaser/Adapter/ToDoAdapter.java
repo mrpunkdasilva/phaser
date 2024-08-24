@@ -25,8 +25,8 @@ import etec.com.br.gustavohj.phaser.Utils.DatabaseHandler;
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     private List<ToDoModel> todoList; // The list of to-do items
-    private MainActivity activity; // The reference to the MainActivity
-    private DatabaseHandler db;
+    private final MainActivity activity; // The reference to the MainActivity
+    private final DatabaseHandler db;
 
     /**
      * Constructs a new ToDoAdapter instance.
@@ -64,14 +64,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         ToDoModel item = todoList.get(position);
         holder.task.setText(item.getQuest());
         holder.task.setChecked(toBoolean(item.getStatus()));
-        holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (compoundButton.isChecked()) {
-                    db.updateStatus(item.getId(), 1);
-                } else {
-                    db.updateStatus(item.getId(), 0);
-                }
+        holder.task.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (compoundButton.isChecked()) {
+                db.updateStatus(item.getId(), 1);
+            } else {
+                db.updateStatus(item.getId(), 0);
             }
         });
     }
@@ -88,11 +85,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     /**
      * Converts a numeric status value to a boolean.
      *
-     * @param numeber the numeric status value
+     * @param number the numeric status value
      * @return true if the status is non-zero, false otherwise
      */
-    private boolean toBoolean(int numeber) {
-        return numeber != 0;
+    private boolean toBoolean(int number) {
+        return number != 0;
     }
 
     /**
@@ -134,6 +131,23 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
      */
     public Context getContext() {
         return activity;
+    }
+
+    /**
+     * Deletes a to-do item from the list and the database.
+     *
+     * @param position the position of the item to be deleted
+     */
+    public void deleteItem(int position) {
+        // Get the to-do item at the specified position
+        ToDoModel item = todoList.get(position);
+
+        // Delete the task from the database
+        db.deleteTask(item.getId());
+
+        // Remove the item from the to-do list and notify the adapter of the item removal
+        todoList.remove(position);
+        notifyItemRemoved(position);
     }
 
     /**
