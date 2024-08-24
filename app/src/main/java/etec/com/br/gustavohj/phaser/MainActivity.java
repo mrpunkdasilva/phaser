@@ -1,6 +1,7 @@
 package etec.com.br.gustavohj.phaser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         tasksAdapter.setTasks(taskList);
 
         fab = findViewById(R.id.fab);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
+        itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
         // Preencher as tasks no layout
         taskList = db.getAllTask();
