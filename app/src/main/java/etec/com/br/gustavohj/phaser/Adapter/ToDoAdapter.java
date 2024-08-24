@@ -41,7 +41,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     /**
      * Creates a new ViewHolder instance for the to-do item.
      *
-     * @param parent the parent ViewGroup
+     * @param parent   the parent ViewGroup
      * @param viewType the view type
      * @return the created ViewHolder instance
      */
@@ -55,7 +55,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     /**
      * Binds the data for the to-do item to the ViewHolder.
      *
-     * @param holder the ViewHolder instance
+     * @param holder   the ViewHolder instance
      * @param position the position of the item in the list
      */
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -81,7 +81,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
      *
      * @return the size of the to-do list
      */
-    public int getItemCount(){
+    public int getItemCount() {
         return todoList.size();
     }
 
@@ -105,18 +105,33 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    /**
+     * Edits an existing to-do item.
+     *
+     * @param position the position of the item in the to-do list
+     */
     public void editItem(int position) {
+        // Get the to-do item at the specified position
         ToDoModel item = todoList.get(position);
-        Bundle bundle = new Bundle();
 
+        // Create a new bundle to pass the item data to the AddNewTask fragment
+        Bundle bundle = new Bundle();
         bundle.putInt("id", item.getId());
         bundle.putString("task", item.getQuest());
 
+        // Create a new AddNewTask fragment and set the arguments
         AddNewTask fragment = new AddNewTask();
         fragment.setArguments(bundle);
+
+        // Show the AddNewTask fragment
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
     }
 
+    /**
+     * Returns the context of the MainActivity.
+     *
+     * @return the context of the MainActivity
+     */
     public Context getContext() {
         return activity;
     }
