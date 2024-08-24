@@ -1,54 +1,83 @@
 package etec.com.br.gustavohj.phaser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
-import java.util.ArrayList;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import etec.com.br.gustavohj.phaser.Adapter.ToDoAdapter;
 import etec.com.br.gustavohj.phaser.Model.ToDoModel;
+import etec.com.br.gustavohj.phaser.Utils.DatabaseHandler;
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * The MainActivity class represents the main activity of the application.
+ * It manages the display of tasks using a RecyclerView and a ToDoAdapter.
+ */
+public class MainActivity extends AppCompatActivity implements DialogCloseListener {
+
+    private DatabaseHandler db;
 
     private RecyclerView tasksRecyclerView;
     private ToDoAdapter tasksAdapter;
+    private FloatingActionButton fab;
 
     private List<ToDoModel> taskList;
 
+    /**
+     * Called when the activity is created.
+     * Initializes the UI components and sets up the task management logic.
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
-        taskList = new ArrayList<>();
+        db = new DatabaseHandler(this);
+        db.openDatabase();
 
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
-        // -> com isso faz com que set quem controla o layout em questão, ou seja, o `questsRecyclerView`
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // criando adapter das tasks
-        tasksAdapter = new ToDoAdapter(this);
+        tasksAdapter = new ToDoAdapter(db, MainActivity.this);
         tasksRecyclerView.setAdapter(tasksAdapter);
 
-        // criando a task
-        ToDoModel task = new ToDoModel();
-        task.setQuest("Teste de task");
-        task.setStatus(0);
-        task.setId(1);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
+        itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
-        // adicionando tasks a lista de tasks
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
-        taskList.add(task);
+        fab = findViewById(R.id.fab);
 
-        // setando a lista de tarefas no ToDoAdapter
+        taskList = db.getAllTasks();
+        Collections.reverse(taskList);
+
         tasksAdapter.setTasks(taskList);
+
+        fab.setOnClickListener(v -> AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG));
+    }
+
+    /**
+     * Handles the closure of a dialog.
+     * Updates the task list, reverses the order, and notifies the adapter of the data change.
+     *
+     * @param dialog the dialog that was closed
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void handleDialogClose(DialogInterface dialog) {
+        taskList = db.getAllTasks();
+        Collections.reverse(taskList);
+        tasksAdapter.setTasks(taskList);
+        tasksAdapter.notifyDataSetChanged();
     }
 }

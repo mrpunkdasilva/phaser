@@ -2,12 +2,24 @@ package etec.com.br.gustavohj.phaser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+/**
+ * The SplashActivity class represents the splash screen of the application.
+ * It displays the app's splash screen for a short duration before transitioning to the MainActivity.
+ */
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
+    /**
+     * Called when the activity is created.
+     * Hides the app's action bar and starts the MainActivity after a 2-second delay.
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,19 +27,9 @@ public class SplashActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
-
-        /*
-        * Manipulador para criar um delay dentro da Activity
-        * - O Handler é Instanciado e usa-se o método postDelayed que deve ser passado o Runnable
-        * - e dentro dele deve ser pasado uma function que vai conter o que será executado depois do dealy
-        * - e o segundo argumento é o delay em millisegundos
-        * */
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(i);
-                finish();
-            }
-        }, 1000);
+        new Handler().postDelayed(() -> {
+            startActivity(i);
+            finish();
+        }, 2000);
     }
 }
