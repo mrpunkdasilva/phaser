@@ -7,6 +7,8 @@
 
 ## Overview
 
+>  In progress
+
 Phaser is a modern, intuitive ToDo List application for Android that helps users organize their tasks efficiently. Built with a clean architecture and material design principles, Phaser provides a seamless user experience for managing daily tasks.
 
 [//]: # (![Phaser App Screenshot]&#40;docs/screenshot.png&#41;)
